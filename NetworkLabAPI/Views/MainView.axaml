@@ -1,0 +1,63 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="clr-namespace:NetworkLabAPI.ViewModels"
+             xmlns:conv="using:NetworkLabAPI.Converters"
+             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="NetworkLabAPI.Views.MainView"
+             x:DataType="vm:MainWindowViewModel">
+  <Design.DataContext>
+    <!-- This only sets the DataContext for the previewer in an IDE,
+         to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+    <vm:MainViewModel />
+  </Design.DataContext>
+
+  <UserControl.Resources>
+    <conv:LanguagesConverter x:Key="LanguagesConverter" />
+  </UserControl.Resources>
+
+  <Grid Margin="20">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <TextBox Grid.Row="0" Text="{Binding SearchText}" Watermark="Enter country name"/>
+    <Button Grid.Row="1" Content="Search" Command="{Binding SearchCommand}"/>
+    <TextBlock Grid.Row="2" Text="{Binding ErrorMessage}" Foreground="Red"/>
+
+    <DataGrid Grid.Row="3"
+              ItemsSource="{Binding Countries}"
+              AutoGenerateColumns="False"
+              IsReadOnly="True"
+              GridLinesVisibility="All">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="Common Name" Binding="{Binding Name.Common}"/>
+        <DataGridTextColumn Header="Official Name" Binding="{Binding Name.Official}"/>
+        <DataGridTextColumn Header="Capital" Binding="{Binding Capital[0]}"/>
+        <DataGridTextColumn Header="Population" Binding="{Binding Population}"/>
+        <DataGridTextColumn Header="Region" Binding="{Binding Region}"/>
+        <DataGridTextColumn Header="Subregion" Binding="{Binding Subregion}"/>
+        <DataGridTextColumn Header="Area" Binding="{Binding Area}"/>
+        <DataGridTextColumn Header="Currency"
+                        Binding="{Binding Currencies.Values, Converter={StaticResource LanguagesConverter}}"/>
+        <DataGridTextColumn Header="Languages"
+                            Binding="{Binding Languages.Values, Converter={StaticResource LanguagesConverter}}"/>
+
+        <DataGridTemplateColumn Header="Flag">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <Image asyncImageLoader:ImageLoader.Source="{Binding Flags.Png}" Width="50" Height="30"/>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+      </DataGrid.Columns>
+    </DataGrid>
+  </Grid>
+</UserControl>
+
+
